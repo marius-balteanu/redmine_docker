@@ -1,0 +1,6 @@
+This folder contains import files for your services, each under a folder named
+after the service.
+
+For example, for a postgres import, you have a folder named 'postgres' which
+contains a file named 'latest' that can be used by 'pg_restore' to import the
+database.

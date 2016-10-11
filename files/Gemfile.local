@@ -1,0 +1,5 @@
+group :development do
+  gem 'web-console', '3.0.0'
+end
+
+gem 'puma', '2.15.3'

@@ -1,0 +1,31 @@
+version: '2'
+
+services:
+  web:
+    command: puma -w 4 -t 1:16 -q
+    image: my_redmine
+    ports:
+      - "80:9292"
+    user: notroot
+    volumes:
+      - ./secrets/:/secrets
+    working_dir: /work
+  mysql:
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    image: mysql:5.7.16
+    networks:
+      - backend_network
+    volumes:
+      - ./import/:/import
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  backend_network:
+    driver: bridge
+  frontend_network:
+    driver: bridge

@@ -1,2 +1,6 @@
-automation/.vagrant
-automation/files/Gemfile
+.vagrant
+
+project/redmine
+
+project/secrets/**/*
+!project/secrets/**/*.sample

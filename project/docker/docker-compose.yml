@@ -8,6 +8,7 @@ services:
       - mysql
     environment:
       - VIRTUAL_HOST=redmine.local
+      - VIRTUAL_PORT=9292
     expose:
       - "9292"
     image: my_redmine_development
@@ -31,6 +32,15 @@ services:
     volumes:
       - ../import/:/import
       - mysql_data:/var/lib/mysql
+  nginx_proxy:
+    image: jwilder/nginx-proxy
+    container_name: redmine_nginx_proxy
+    networks:
+      - frontend_network
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
 
 volumes:
   mysql_data:

@@ -66,7 +66,7 @@ See `/secrets/.env.list.sample` for what it should contain.
     \cp -f ./config/Gemfile.local ./redmine/
     \cp -f ./config/additional_environment.rb ./redmine/config/
     \cp -f ./config/database.yml ./redmine/config/
-    \cp -f ./config/secret_token.rb ./redmine/config
+    \cp -f ./config/secret_token.rb ./redmine/config/initializers
     ```
 
 4. To build the containers run:

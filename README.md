@@ -53,6 +53,15 @@
 3. Add a file named `env.list` in the `secrets` directory.
 See `/secrets/.env.list.sample` for what it should contain.
 
+4. Copy the files in `project/config` to their right location:
+
+    ```bash
+    \cp -f ./config/Gemfile.local ./redmine/
+    \cp -f ./config/additional_environment.rb ./redmine/config/
+    \cp -f ./config/database.yml ./redmine/config/
+    \cp -f ./config/secret_token.rb ./redmine/config
+    ```
+
 4. To build the containers run:
 
     ```bash

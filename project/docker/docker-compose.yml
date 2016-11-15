@@ -4,9 +4,18 @@ services:
   web:
     command: bundle exec puma -w 1 -t 1:16
     container_name: redmine_web
+    depends_on:
+      - mysql
+    environment:
+      - VIRTUAL_HOST=redmine.local
     expose:
       - "9292"
     image: my_redmine_development
+    links:
+      - "mysql:mysql"
+    networks:
+      - backend_network
+      - frontend_network
     user: notroot
     volumes:
       - ../redmine:/work

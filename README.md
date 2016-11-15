@@ -16,6 +16,13 @@
 
 ## Install
 
+1. Add the following to your `/etc/hosts` file:
+
+    ```
+    # Redmine
+    0.0.0.0		redmine.local
+    ```
+
 1. Add the following to your `~/.bashrc` file:
 
     ```bash
@@ -78,8 +85,8 @@ See `/secrets/.env.list.sample` for what it should contain.
 5. To set up a fresh database run:
 
     ```bash
-    docker-exec redmine_web_1 /entry \
-      bundle exec rake db:create db:migrate redmine:load_default_data REDMINE_LANG=en
+    docker-exec redmine_web /entry \
+      bundle exec rake db:create db:migrate
     ```
     
 6. To reload the entire application run:
@@ -91,7 +98,7 @@ See `/secrets/.env.list.sample` for what it should contain.
 ## View logs
 
 ```bash
-docker-tail redmine_web_1
+docker-tail redmine_web
 ```
 
 ## Execute commands inside a contaier
@@ -99,5 +106,5 @@ docker-tail redmine_web_1
 Make sure it is running and then run:
 
 ```bash
-docker-exec redmine_web_1 /entry bundle install
+docker-exec redmine_web /entry bundle install
 ```

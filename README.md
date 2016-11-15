@@ -23,7 +23,7 @@
     0.0.0.0		redmine.local
     ```
 
-1. Add the following to your `~/.bashrc` file:
+2. Add the following to your `~/.bashrc` file:
 
     ```bash
     export HOST_USER_UID=`id -u`
@@ -33,19 +33,19 @@
     alias docker-tail='docker logs -f --tail=100'
     ```
 
-2. Source the new `~/.bashrc` file:
+3. Source the new `~/.bashrc` file:
 
     ```bash
     source ~/.bash_profile
     ```
 
-1. Clone this repository:
+4. Clone this repository:
 
     ``` bash
     git clone https://github.com/marius-balteanu/redmine_docker.git
     ```
 
-2. Go inside the `redmine_docker/project` directory and clone the redmine repository:
+5. Go inside the `redmine_docker/project` directory and clone the redmine repository:
 
     ```bash
     cd redmine_docker/project
@@ -57,10 +57,10 @@
     git clone git@github.com:redmine/redmine.git
     ```
 
-3. Add a file named `env.list` in the `secrets` directory.
+6. Add a file named `env.list` in the `secrets` directory.
 See `/secrets/.env.list.sample` for what it should contain.
 
-4. Copy the files in `project/config` to their right location:
+7. Copy the files in `project/config` to their right location:
 
     ```bash
     \cp -f ./config/Gemfile.local ./redmine/
@@ -69,7 +69,7 @@ See `/secrets/.env.list.sample` for what it should contain.
     \cp -f ./config/secret_token.rb ./redmine/config/initializers
     ```
 
-4. Build the containers:
+8. Build the containers:
 
     ```bash
     docker-compose -f docker/docker-compose.build.yml build
@@ -78,7 +78,7 @@ See `/secrets/.env.list.sample` for what it should contain.
     docker-compose -f docker/docker-compose.build-dev.yml build
     ```
 
-4. Start the containers:
+9. Start the containers:
 
     ```bash
     # For the production setup:
@@ -88,14 +88,14 @@ See `/secrets/.env.list.sample` for what it should contain.
     docker-compose -f docker/docker-compose.yml up -d
     ```
 
-5. To set up a fresh database run:
+10. To set up a fresh database run:
 
     ```bash
     docker-exec redmine_web /entry \
       bundle exec rake db:create db:migrate
     ```
     
-6. To reload the entire application run:
+11. To reload the entire application run:
 
     ```bash
     docker-compose restart

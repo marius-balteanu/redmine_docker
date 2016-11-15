@@ -2,7 +2,7 @@ version: '2'
 
 services:
   web:
-    command: bundle exec puma -w 1 -t 1:16
+    command: bundle exec puma -w 1 -t 1:16 -q
     container_name: redmine_web
     depends_on:
       - mysql

@@ -69,16 +69,22 @@ See `/secrets/.env.list.sample` for what it should contain.
     \cp -f ./config/secret_token.rb ./redmine/config/initializers
     ```
 
-4. To build the containers run:
+4. Build the containers:
 
     ```bash
     docker-compose -f docker/docker-compose.build.yml build
+
+    # For development you will need to build the dev setup as well.
     docker-compose -f docker/docker-compose.build-dev.yml build
     ```
 
-4. To start the containers run:
+4. Start the containers:
 
     ```bash
+    # For the production setup:
+    docker-compose -f docker/docker-compose.production.yml up -d
+
+    # For the development setup:
     docker-compose -f docker/docker-compose.yml up -d
     ```
 
@@ -103,7 +109,7 @@ docker-tail redmine_web
 
 ## Execute commands inside a contaier
 
-Make sure it is running and then run:
+Make sure the container is running and execute:
 
 ```bash
 docker-exec redmine_web /entry bundle install

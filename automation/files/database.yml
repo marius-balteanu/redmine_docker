@@ -1,0 +1,23 @@
+development:
+  adapter: mysql2
+  database: redmine
+  host: mysql
+  username: root
+  password: root
+  encoding: utf8
+
+test:
+  adapter: mysql2
+  database: redmine_test
+  host: mysql
+  username: root
+  password: root
+  encoding: utf8
+
+production:
+  adapter: mysql2
+  database: <%= ENV['DB_NAME'] %>
+  host: <%= ENV['DB_HOST'] %>
+  username: <%= ENV['DB_USER'] %>
+  password: <%= ENV['DB_PASSWORD'] %>
+  encoding: utf8

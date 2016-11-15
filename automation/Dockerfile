@@ -1,11 +1,13 @@
 FROM ruby:2.2.5
 
-ARG HOST_USER_UID=1000
-ARG HOST_USER_GID=1000
+ARG HOST_USER_UID=900
+ARG HOST_USER_GID=900
 
-ADD ./redmine ./config/Gemfile.local /work/
-ADD ./config/database.yml /work/config
-ADD ./docker/entry /
+ADD docker/* /work/docker/
+ADD files/Gemfile* /work/
+ADD files/additional_environment.rb /work/config/
+ADD files/database.yml /work/config/
+ADD docker/entry /
 
 RUN set -ex                                                 && \
                                                                \
@@ -13,10 +15,9 @@ RUN set -ex                                                 && \
     groupadd -g $HOST_USER_GID notroot                      && \
     useradd -lm -u $HOST_USER_UID -g $HOST_USER_GID notroot && \
                                                                \
-    echo 'Giving permissions to files and directories'      && \
+    echo 'Giving permissions to files'                      && \
     chmod +x /entry                                         && \
-    mkdir /import /secrets                                  && \
-    chown -R notroot:notroot /work /import /secrets         && \
+    chown -R notroot:notroot /work                          && \
                                                                \
     echo 'Installing required packages'                     && \
     apt-get update                                          && \
@@ -26,14 +27,8 @@ RUN set -ex                                                 && \
       libpq-dev                                                \
       nodejs                                                && \
                                                                \
-    echo 'Installing production gems as notroot'            && \
-    runuser notroot -c '                                       \
-      cd /work                                              && \
-      bundle install                                           \
-        --jobs  3                                              \
-        --retry 3                                              \
-        --without development test                             \
-    '                                                       && \
+    echo 'Installing gems as notroot'                       && \
+    runuser notroot -c 'cd /work && bundle install --force' && \
                                                                \
     echo 'Removing unnecessary content'                     && \
     rm -rf /var/lib/apt/lists/*

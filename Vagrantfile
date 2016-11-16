@@ -55,18 +55,11 @@ Vagrant.configure(2) do |config|
     else
       echo 'Installing Docker, please be patient!'
 
-      set -e
-      apt-get update
-      apt-get install -y --no-install-recommends apt-transport-https ca-certificates
-
-      echo 'deb https://apt.dockerproject.org/repo debian-jessie main' >> /etc/apt/sources.list.d/docker.list
-      apt-get update
-      apt-get install -y --no-install-recommends docker-engine
+      curl -sSL https://get.docker.com/ | sh
       groupadd docker
       usermod -aG docker vagrant
       service docker enable
       service docker restart
-      set +e
 
       echo 'Docker successfully installed.'
     fi

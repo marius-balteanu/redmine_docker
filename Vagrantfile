@@ -1,30 +1,28 @@
-# Before running `vagrant up`, please make sure you have the config.yaml file prepared in the same folder.
-# A sample config file is already provided as, config.yaml.sample, so you can start from it .
 Vagrant.configure(2) do |config|
-	config.vm.box         = 'debian/jessie64'
+  config.vm.box         = 'debian/jessie64'
   config.vm.box_version = '8.6.1'
 
   config.vm.network 'private_network', ip: '192.168.33.31'
 
-	# Change the VM allocated resources to the one specified below.
-	# Also change the name of the VM in the VirtualBox interface.
-	config.vm.provider 'virtualbox' do |vb|
-		vb.name   = 'Redmine'
-		vb.memory = 2048
-		vb.cpus   = 1
+  # Change the VM allocated resources to the one specified below.
+  # Also change the name of the VM in the VirtualBox interface.
+  config.vm.provider 'virtualbox' do |vb|
+    vb.name   = 'Redmine'
+    vb.memory = 2048
+    vb.cpus   = 1
 
-		vb.customize [
+    vb.customize [
       'setextradata',
       :id,
       'VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root',
       '1'
     ]
-	end
+  end
 
   # Sync the sources folder with the machine
   # !! Make sure you have the vagrant nfs plugin installed if running on Windows
   # vagrant plugin install vagrant-winnfsd
-  config.vm.synced_folder './', '/awesome/automation', type: 'nfs'
+  config.vm.synced_folder '.', '/vagrant', type: 'nfs'
 
   # Set to true if you want automatic checks
   config.vm.box_check_update = false
@@ -54,9 +52,21 @@ Vagrant.configure(2) do |config|
       echo 'Docker already installed!'
     else
       echo 'Installing Docker, please be patient!'
-      curl -sSL https://get.docker.com/ | sh
+
+      set -e
+      echo 'deb http://http.debian.net/debian wheezy-backports main' >> /etc/apt/sources.list.d/backports.list
+      apt-get update
+      apt-get install -y --no-install-recommends apt-transport-https ca-certificates
+
+      echo 'deb https://apt.dockerproject.org/repo debian-jessie main' >> /etc/apt/sources.list.d/docker.list
+      apt-get update
+      apt-get install -y --no-install-recommends docker-engine
+      groupadd docker
       usermod -aG docker vagrant
+      service docker enable
       service docker restart
+      set +e
+
       echo 'Docker successfully installed.'
     fi
 
@@ -73,22 +83,12 @@ Vagrant.configure(2) do |config|
       echo 'Docker Compose successfully installed.'
     fi
 
-    # Project folder management
+    # Project directory
     if [ ! -d /work ]
     then
-      echo 'Creating the /work folder'
+      echo 'Creating the /work directory'
       mkdir /work
       chown vagrant:vagrant /work
-    fi
-
-    # Starting the Nginx reverse proxy
-    docker run --name nginx -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy >/dev/null 2>&1
-    if [ $? -eq 0 ]
-    then
-      echo 'Run: Nginx reverse proxy!'
-    else
-      docker start nginx >/dev/null 2>&1
-      echo 'Start: Nginx reverse proxy!'
     fi
 
     echo 'Everything is ready!'

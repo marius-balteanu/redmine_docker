@@ -54,7 +54,6 @@ Vagrant.configure(2) do |config|
       echo 'Installing Docker, please be patient!'
 
       set -e
-      echo 'deb http://http.debian.net/debian wheezy-backports main' >> /etc/apt/sources.list.d/backports.list
       apt-get update
       apt-get install -y --no-install-recommends apt-transport-https ca-certificates
 

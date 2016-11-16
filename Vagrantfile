@@ -29,6 +29,8 @@ Vagrant.configure(2) do |config|
 
   # Le awesome provisioning here
   config.vm.provision 'shell', run: 'always', inline: <<-SHELL
+    set -x
+
     # Install git if not present
     command -v git >/dev/null 2>&1
     if [ $? -eq 1 ]

@@ -23,6 +23,7 @@ Vagrant.configure(2) do |config|
   # !! Make sure you have the vagrant nfs plugin installed if running on Windows
   # vagrant plugin install vagrant-winnfsd
   config.vm.synced_folder '.', '/vagrant', type: 'nfs'
+  config.vm.synced_folder '.', '/work',    type: 'nfs'
 
   # Set to true if you want automatic checks
   config.vm.box_check_update = false

@@ -1,5 +1,13 @@
 group :development do
-  gem 'web-console', '3.0.0'
+  # A good development consode in the browser
+  gem 'better_errors'
+  gem 'binding_of_caller'
+
+  # Debugging and code documentation
+  gem 'pry'
+  gem 'pry-doc'
+  gem 'pry-byebug'
 end
 
-gem 'puma', '2.15.3'
+# The awesome web server
+gem 'puma', '3.6.2'

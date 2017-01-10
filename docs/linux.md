@@ -58,6 +58,7 @@ See `/secrets/.env.list.sample` for what it should contain.
     \cp -f ./config/Gemfile.local ./redmine/
     \cp -f ./config/additional_environment.rb ./redmine/config/
     \cp -f ./config/database.yml ./redmine/config/
+    \cp -f ./config/puma.rb ./redmine/tmp/
     \cp -f ./config/secret_token.rb ./redmine/config/initializers
     ```
 
@@ -89,7 +90,11 @@ See `/secrets/.env.list.sample` for what it should contain.
 11. To reload the entire application run:
 
     ```bash
-    docker-compose restart
+    # For the production setup:
+    docker-compose -f docker/docker-compose.production.yml restart
+
+    # For the development setup:
+    docker-compose -f docker/docker-compose.yml restart
     ```
 
 ## View logs
@@ -98,10 +103,31 @@ See `/secrets/.env.list.sample` for what it should contain.
 docker-tail redmine_web
 ```
 
+## Debugging
+
+Place a `binding.pry` call where you would like the application to breakpoint.
+Then attach to the container:
+
+```bash
+docker attach redmine_web
+```
+
+To detach from the container press `Ctrl+p Ctrl+q`.
+
+>
+#### NOTE!
+If you press `Ctrl+c` while attached you will terminate the process and stop
+the container. You will have to restart the container afterwards.
+
+
 ## Execute commands inside a contaier
 
 Make sure the container is running and execute:
 
 ```bash
-docker-exec redmine_web /entry bundle install
+# To install gems use the version wothout `/enrty`
+docker-exec redmine_web bundle install
+
+# Any other command that depends on the enviroment must pass trough `/entry`
+docker-exec redmine-web /entry rails c
 ```

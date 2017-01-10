@@ -2,7 +2,7 @@ version: '2'
 
 services:
   web:
-    command: bundle exec puma -w 1 -t 1:16 -q
+    command: bundle exec puma -w 1 -t 1:16 -q -C tmp/puma.rb
     container_name: redmine_web
     depends_on:
       - mysql
@@ -17,6 +17,8 @@ services:
     networks:
       - backend_network
       - frontend_network
+    stdin_open: true
+    tty: true
     user: notroot
     volumes:
       - ../redmine:/work

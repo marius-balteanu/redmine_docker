@@ -1,8 +1,0 @@
-version: '2'
-
-services:
-  web_development:
-    build:
-      context: ..
-      dockerfile: ./docker/Dockerfile.development
-    image: my_redmine_development

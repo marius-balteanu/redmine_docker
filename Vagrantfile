@@ -1,6 +1,6 @@
 Vagrant.configure(2) do |config|
   config.vm.box         = 'debian/jessie64'
-  config.vm.box_version = '8.6.1'
+  config.vm.box_version = '8.7.0'
 
   config.vm.network 'private_network', ip: '192.168.33.31'
 
@@ -22,8 +22,8 @@ Vagrant.configure(2) do |config|
   # Sync the sources folder with the machine
   # !! Make sure you have the vagrant nfs plugin installed if running on Windows
   # vagrant plugin install vagrant-winnfsd
+  # TODO: make this automatically install
   config.vm.synced_folder '.', '/vagrant', type: 'nfs'
-  config.vm.synced_folder '.', '/work',    type: 'nfs'
 
   # Set to true if you want automatic checks
   config.vm.box_check_update = false
@@ -37,6 +37,7 @@ Vagrant.configure(2) do |config|
     if [ $? -eq 1 ]
     then
       echo 'Installing GIT'
+      apt-get update
       apt-get install -y --no-install-recommends git
     fi
 
@@ -45,6 +46,7 @@ Vagrant.configure(2) do |config|
     if [ $? -eq 1 ]
     then
       echo 'Installing CURL'
+      apt-get update
       apt-get install -y --no-install-recommends curl
     fi
 
@@ -56,7 +58,22 @@ Vagrant.configure(2) do |config|
     else
       echo 'Installing Docker, please be patient!'
 
-      curl -sSL https://get.docker.com/ | sh
+      apt-get update
+      apt-get install              \
+        apt-transport-https        \
+        ca-certificates            \
+        software-properties-common
+
+      curl -fsSL https://yum.dockerproject.org/gpg | sudo apt-key add -
+      apt-key fingerprint 58118E89F3A912897C070ADBF76221572C52609D
+      add-apt-repository                         \
+        "deb https://apt.dockerproject.org/repo/ \
+        debian-$(lsb_release -cs)                \
+        main"
+
+      apt-get update
+      apt-get -y install docker-engine
+
       groupadd docker
       usermod -aG docker vagrant
       service docker enable
@@ -72,18 +89,12 @@ Vagrant.configure(2) do |config|
       echo 'Docker Compose already installed!'
     else
       echo 'Installing Docker Compose, please be patient!'
-      curl -L https://github.com/docker/compose/releases/download/1.8.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-      chmod +x /usr/local/bin/docker-compose
-      curl -L https://raw.githubusercontent.com/docker/compose/$(docker-compose --version | awk 'NR==1{print $NF}')/contrib/completion/bash/docker-compose > /etc/bash_completion.d/docker-compose
-      echo 'Docker Compose successfully installed.'
-    fi
 
-    # Project directory
-    if [ ! -d /work ]
-    then
-      echo 'Creating the /work directory'
-      mkdir /work
-      chown vagrant:vagrant /work
+      curl -L "https://github.com/docker/compose/releases/download/1.9.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      chmod +x /usr/local/bin/docker-compose
+      curl -L https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose
+
+      echo 'Docker Compose successfully installed.'
     fi
 
     echo 'Everything is ready!'

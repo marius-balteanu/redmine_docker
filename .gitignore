@@ -1,6 +1,15 @@
-.vagrant
+# Vagrant artifacts
+/.vagrant
 
-project/redmine
+# The redmine git repository
+/project/redmine
 
-project/secrets/**/*
-!project/secrets/**/*.sample
+# ENV files containing sensitive information
+/project/environment/**/*
+!/project/environment/**/*.sample
+
+/project/secrets/**/*
+!/project/secrets/**/*.sample
+
+/project/settings/**/*
+!/project/settings/**/*.sample

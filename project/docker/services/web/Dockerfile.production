@@ -1,11 +1,11 @@
-FROM ruby:2.2.5
+FROM ruby:2.2.6
 
 ARG HOST_USER_UID=1000
 ARG HOST_USER_GID=1000
 
 ADD ./redmine ./config/Gemfile.local /work/
 ADD ./config/database.yml /work/config
-ADD ./docker/entry /
+ADD ./docker/services/web/entry /
 
 RUN set -ex                                                 && \
                                                                \
@@ -15,7 +15,7 @@ RUN set -ex                                                 && \
                                                                \
     echo 'Giving permissions to files and directories'      && \
     chmod +x /entry                                         && \
-    mkdir /import /secrets                                  && \
+    mkdir /import /secrets /settings                        && \
     chown -R notroot:notroot /work /import /secrets         && \
                                                                \
     echo 'Installing required packages'                     && \

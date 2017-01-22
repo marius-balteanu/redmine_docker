@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+
+# Adds secrets to environment.
+if [ -f /secrets/mysql_secrets.env ];
+then
+  set -a
+  source /secrets/mysql_secrets.env
+  set +a
+fi
+
+exec "$@"

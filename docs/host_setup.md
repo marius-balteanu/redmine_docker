@@ -144,6 +144,8 @@ git clone git@github.com:redmine/redmine.git
     cat <<- 'EOT' >> ~/.bashrc
     export DEPLOYMENT_ENV=production
     EOT
+
+    source ~/.bashrc
     ```
 
     The possible values for the `DEPLOYMENT_ENV` variable are:

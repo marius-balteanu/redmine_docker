@@ -69,7 +69,7 @@ git clone git@github.com:redmine/redmine.git
 
 ## Initial Setup
 
-1. Go inside the `project` firectory from te repository root:
+1. Go inside the `project` directory from te repository root:
     ```bash
     cd project
     ```

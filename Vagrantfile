@@ -1,3 +1,11 @@
+# Automatically installs required plugin on Windows
+if Vagrant::Util::Platform.windows?
+  plugin = 'vagrant-winnfsd'
+
+  system "vagrant plugin install #{plugin}" unless Vagrant.has_plugin?(plugin)
+end
+
+# Configures virtual machine
 Vagrant.configure(2) do |config|
   config.vm.box         = 'debian/jessie64'
   config.vm.box_version = '8.7.0'
@@ -19,11 +27,10 @@ Vagrant.configure(2) do |config|
     ]
   end
 
-  # Sync the sources folder with the machine
-  # !! Make sure you have the vagrant nfs plugin installed if running on Windows
-  # vagrant plugin install vagrant-winnfsd
-  # TODO: make this automatically install
-  config.vm.synced_folder '.', '/vagrant', type: 'nfs'
+  # Sync the sources folder with the machine.
+  # For Windows `nfs` is preffered due to poor performance of default settings.
+  synced_folder_type = Vagrant::Util::Platform.windows? ? 'nfs' : nil
+  config.vm.synced_folder '.', '/vagrant', type: synced_folder_type
 
   # Set to true if you want automatic checks
   config.vm.box_check_update = false

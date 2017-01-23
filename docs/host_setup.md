@@ -38,7 +38,7 @@ Source the new `~/.bashrc` file:
 source ~/.bashrc
 ```
 
-Create and start an nginx reverse proxy:
+Create and start the nginx reverse proxy:
 ``` bash
 docker run                                    \
   --name nginx_reverse_proxy -d -p 80:80      \

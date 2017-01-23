@@ -1,4 +1,4 @@
-FROM my_redmine
+FROM my_redmine_production
 
 RUN set -ex                                       && \
                                                      \

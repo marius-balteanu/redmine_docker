@@ -40,7 +40,7 @@ source ~/.bashrc
 
 Create and start an nginx reverse proxy:
 ``` bash
-docker run
+docker run                                    \
   --name nginx_reverse_proxy -d -p 80:80      \
   -v /var/run/docker.sock:/tmp/docker.sock:ro \
   jwilder/nginx-proxy
@@ -69,20 +69,34 @@ git clone git@github.com:redmine/redmine.git
 
 ## Initial Setup
 
-1. Add a file named `env.list` in the `secrets` directory. See
-`/secrets/.env.list.sample` for what it should contain. For a default
-configuration just copy the file with the follwoing command:
+1. Go inside the `project` firectory from te repository root:
     ```bash
-    \cp -f ./secrets/env.list.sample ./secrets/env.list
+    cd project
+    ```
+
+2. You need to create the configuration files as following:
+    * `environment/web.env`
+    * `secrets/mysql_secrets.env`
+    * `secrets/web_secrets.env`
+    * `settings/web_settings.env`
+
+    All of them have a corresponding `.sample` file in the same directory in which
+    you can find more information about what each must contain. If you want the
+    default values then siply copy them with the following commands:
+    ```bash
+    \cp -f ./environment/web.env.sample       ./environment/web.env
+    \cp -f ./secrets/mysql_secrets.env.sample ./secrets/mysql_secrets.env
+    \cp -f ./secrets/web_secrets.env.sample   ./secrets/web_secrets.env
+    \cp -f ./settings/web_settings.env.sample ./settings/web_settings.env
     ```
 
 2. Copy the files in `project/config` to their right location:
     ```bash
-    \cp -f ./config/Gemfile.local ./redmine/
+    \cp -f ./config/Gemfile.local             ./redmine/
     \cp -f ./config/additional_environment.rb ./redmine/config/
-    \cp -f ./config/database.yml ./redmine/config/
-    \cp -f ./config/puma.rb ./redmine/tmp/
-    \cp -f ./config/secret_token.rb ./redmine/config/initializers
+    \cp -f ./config/database.yml              ./redmine/config/
+    \cp -f ./config/puma.rb                   ./redmine/tmp/
+    \cp -f ./config/secret_token.rb           ./redmine/config/initializers
     ```
 
 3. Build the containers:
@@ -101,15 +115,39 @@ configuration just copy the file with the follwoing command:
     ```
 
 5. Start the containers:
+    For Development execute just this command below:
     ```bash
-    # For development:
-    export DEPLOYMENT_ENV=development
-    
-    # For production
-    export DEPLOYMENT_ENV=production 
+    docker-compose -p redmine up -d
+    ```
+
+    **Please DO NOT execute the commands below if you do not intend to bring up
+    the PRODUCTION environment**
+
+    For Production you will have to prefix all your commands with the
+    `DEPLOYMENT_ENV=production` environment variable.
+    ```bash
+    DEPLOYMENT_ENV=production docker-compose -p redmine up -d
+    ```
+
+    If you do not run multiple environments on the same host you can also export
+    the variable and just use the normal commands:
+    ```bash
+    export DEPLOYMENT_ENV=production
 
     docker-compose -p redmine up -d
     ```
+
+    If you want the `DEPLOYMENT_ENV` variable to be permanent you need to set it
+    in your `~/.bashrc` file:
+    ```bash
+    cat <<- 'EOT' >> ~/.bashrc
+    export DEPLOYMENT_ENV=production
+    EOT
+    ```
+
+    The possible values for the `DEPLOYMENT_ENV` variable are:
+    * `DEPLOYMENT_ENV=development`
+    * `DEPLOYMENT_ENV=production`
 
 6. Connect the frontend network to the nginx reverse proxy:
     ```bash
@@ -130,11 +168,31 @@ configuration just copy the file with the follwoing command:
 
 ## Cheatsheet
 
-### View logs
+### Execute commands inside a contaier
+
+Make sure the container is running and execute:
 
 ```bash
-docker-tail redmine_web
+# To install gems use the version without `/enrty`
+docker-compose -p redmine exec web bundle install
+
+# Any other command that depends on the enviroment must pass trough `/entry`
+docker-compose -p redmine exec web /entry rails c
 ```
+
+
+### View logs
+
+You can use the `docker-tail` alias:
+```bash
+docker-tail redmine_web_1
+```
+
+You can also use the full command:
+``` bash
+docker logs -f --tail=100 redmine_web_1
+```
+
 
 ### Debugging
 
@@ -151,16 +209,3 @@ To detach from the container press `Ctrl+p Ctrl+q`.
 #### NOTE!
 If you press `Ctrl+c` while attached you will terminate the process and stop
 the container. You will have to restart the container afterwards.
-
-
-### Execute commands inside a contaier
-
-Make sure the container is running and execute:
-
-```bash
-# To install gems use the version without `/enrty`
-docker-compose -p redmine exec web bundle install
-
-# Any other command that depends on the enviroment must pass trough `/entry`
-docker-compose -p redmine exec web /entry rails c
-```

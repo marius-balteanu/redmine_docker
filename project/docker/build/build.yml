@@ -12,6 +12,6 @@ services:
 
   mysql:
     build:
-      context: .
-      dokcerfile: ./Dockerfile
+      context: ../..
+      dockerfile: ./docker/services/mysql/Dockerfile
     image: my_redmine_mysql

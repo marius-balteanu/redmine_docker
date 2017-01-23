@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   web:
-    command: bundle exec puma -C tmp/puma.rb
+    command: bundle exec puma -C ./tmp/puma.rb
     depends_on:
       - mysql
     env_file: ./environment/web.env

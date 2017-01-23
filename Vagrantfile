@@ -83,9 +83,7 @@ Vagrant.configure(2) do |config|
       apt-get update
       apt-get -y install docker-engine
 
-      # groupadd docker
       usermod -aG docker vagrant
-      service docker enable
       service docker restart
 
       set +e

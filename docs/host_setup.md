@@ -82,7 +82,7 @@ git clone git@github.com:redmine/redmine.git
 
     All of them have a corresponding `.sample` file in the same directory in which
     you can find more information about what each must contain. If you want the
-    default values then siply copy them with the following commands:
+    default values then simply copy them with the following commands:
     ```bash
     \cp -f ./environment/web.env.sample       ./environment/web.env
     \cp -f ./secrets/mysql_secrets.env.sample ./secrets/mysql_secrets.env
@@ -115,13 +115,14 @@ git clone git@github.com:redmine/redmine.git
     ```
 
 5. Start the containers:
+
     For Development execute just this command below:
     ```bash
     docker-compose -p redmine up -d
     ```
 
-    **Please DO NOT execute the commands below if you do not intend to bring up
-    the PRODUCTION environment**
+    **Please skip to the next step and DO NOT execute the commands below if you
+    do not intend to bring up the PRODUCTION environment**
 
     For Production you will have to prefix all your commands with the
     `DEPLOYMENT_ENV=production` environment variable.
@@ -129,8 +130,8 @@ git clone git@github.com:redmine/redmine.git
     DEPLOYMENT_ENV=production docker-compose -p redmine up -d
     ```
 
-    If you do not run multiple environments on the same host you can also export
-    the variable and just use the normal commands:
+    If you do not run multiple environments on the same machine you can also
+    export the variable and just use the normal commands:
     ```bash
     export DEPLOYMENT_ENV=production
 
@@ -161,9 +162,14 @@ git clone git@github.com:redmine/redmine.git
     ```
 
 8. Restart the web service:
-   ```bash
-   docker-compose -p redmine restart web
-   ```
+    ```bash
+    docker-compose -p redmine restart web
+    ```
+
+9. Visit the application url in a browser:
+    ```bash
+    http://redmine.local/
+    ```
 
 
 ## Cheatsheet

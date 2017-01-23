@@ -65,8 +65,10 @@ Vagrant.configure(2) do |config|
     else
       echo 'Installing Docker, please be patient!'
 
+      set -e
+
       apt-get update
-      apt-get install              \
+      apt-get install -y           \
         apt-transport-https        \
         ca-certificates            \
         software-properties-common
@@ -85,6 +87,8 @@ Vagrant.configure(2) do |config|
       usermod -aG docker vagrant
       service docker enable
       service docker restart
+
+      set +e
 
       echo 'Docker successfully installed.'
     fi

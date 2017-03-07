@@ -1,0 +1,2 @@
+redmine/tmp/**/*
+!redmine/tmp/puma.rb

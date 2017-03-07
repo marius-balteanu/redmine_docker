@@ -1,2 +1,15 @@
-automation/.vagrant
-automation/files/Gemfile
+# Vagrant artifacts
+/.vagrant
+
+# The redmine git repository
+/project/redmine
+
+# ENV files containing sensitive information
+/project/environment/**/*
+!/project/environment/**/*.sample
+
+/project/secrets/**/*
+!/project/secrets/**/*.sample
+
+/project/settings/**/*
+!/project/settings/**/*.sample

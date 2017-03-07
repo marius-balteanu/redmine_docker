@@ -1,0 +1,42 @@
+version: '2.1'
+
+services:
+  web:
+    command: bundle exec puma -C ./tmp/puma.rb
+    depends_on:
+      - mysql
+    env_file: ./environment/web.env
+    expose:
+      - "9292"
+    image: "my_redmine_${DEPLOYMENT_ENV:-development}"
+    links:
+      - "mysql:mysql"
+    networks:
+      - backend_network
+      - frontend_network
+    stdin_open: true
+    tty: true
+    user: notroot
+    volumes:
+      - ./redmine:/work
+      - ./secrets/web_secrets.env:/secrets/web_secrets.env
+      - ./settings/web_settings.env:/settings/web_settings.env
+    working_dir: /work
+  mysql:
+    image: my_redmine_mysql
+    networks:
+      - backend_network
+    volumes:
+      - ./import:/import
+      - ./secrets/mysql_secrets.env:/secrets/mysql_secrets.env
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  backend_network:
+    driver: bridge
+  frontend_network:
+    driver: bridge

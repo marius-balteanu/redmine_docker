@@ -1,0 +1,42 @@
+#!/bin/bash
+set -e
+
+# Adds secrets to environment.
+if [ -f /secrets/web_secrets.env ];
+then
+    set -a
+    source /secrets/web_secrets.env
+    set +a
+fi
+
+# Adds settings to environment.
+if [ -f /settings/web_settings.env ];
+then
+  set -a
+  source /settings/web_settings.env
+  set +a
+fi
+
+if [ -f /work/tmp/.run_bundle_update ];
+then
+  bundle update --jobs 3 --retry 3
+fi
+
+if [ -f /work/tmp/.run_bundle_install ];
+then
+  bundle install --jobs 3 --retry 3
+fi
+
+# Starts spring server if running in development.
+if ! [[ "$1" == 'bash' || "$1" == '/bin/bash' ]];
+then
+  if [[ "$RAILS_ENV" == 'development' || "$RAILS_ENV" == '' ]];
+  then
+    if [ -z "$(ps aux | grep 'spring server' | grep -v 'grep')" ];
+    then
+      rake --help > /dev/null
+    fi
+  fi
+fi
+
+exec "$@"

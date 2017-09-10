@@ -1,0 +1,128 @@
+---
+- name: Local project VM provsioning (no app)
+  hosts: all
+  vars:
+    - project_root: /vagrant/project
+  tasks:
+    - name: Install packages
+      package:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - git
+        - vim
+      become: True
+
+    - name: Install pip
+      easy_install: name=pip
+      become: True
+
+    - name: Install docker-py
+      pip: name=docker-py
+      become: True
+
+    - name: Add redmine.local to hosts
+      lineinfile:
+        dest: /etc/hosts
+        regexp: '^0\.0\.0\.0'
+        line: '0.0.0.0 redmine.local'
+        state: present
+        insertafter: EOF
+      become: True
+
+    - name: Add host user uid
+      lineinfile:
+        dest: ~/.bashrc
+        regexp: '^export HOST_USER_UID='
+        line: 'export HOST_USER_UID=`id -u`'
+        state: present
+        insertafter: EOF
+
+    - name: Add host user gid
+      lineinfile:
+        dest: ~/.bashrc
+        regexp: '^export HOST_USER_GID='
+        line: 'export HOST_USER_GID=`id -g`'
+        state: present
+        insertafter: EOF
+
+    - name: Add docker-exec alias
+      lineinfile:
+        dest: ~/.bashrc
+        regexp: '^alias docker-exec='
+        line: "alias docker-exec='docker exec -it -u `id -u`:`id -g`'"
+        state: present
+        insertafter: EOF
+
+    - name: Add docker-tail alias
+      lineinfile:
+        dest: ~/.bashrc
+        regexp: '^alias docker-tail='
+        line: "alias docker-tail='docker logs -f --tail=100'"
+        state: present
+        insertafter: EOF
+
+    - name: Add ll alias
+      lineinfile:
+        dest: ~/.bashrc
+        regexp: '^alias ll='
+        line: "alias ll='ls -l --color=auto'"
+        state: present
+        insertafter: EOF
+
+    - name: Clone Redmine repository
+      git:
+        repo: https://github.com/redmine/redmine
+        dest: "{{ project_root }}/redmine/"
+        accept_hostkey: True
+        update: no
+
+    - name: Pull the nginx reverse proxy image
+      docker_image:
+        name: jwilder/nginx-proxy
+        state: present
+
+    - name: Create the nginx reverse proxy container
+      docker_container:
+        name: nginx_reverse_proxy
+        image: jwilder/nginx-proxy
+        ports:
+          - 80:80
+        volumes:
+          - /var/run/docker.sock:/tmp/docker.sock:ro
+        state: started
+
+    - name: Copy environment vars
+      copy:
+        src: "{{ project_root }}/{{ item }}.sample"
+        dest: "{{ project_root }}/{{ item }}"
+        force: no
+      with_items:
+        - environment/web.env
+        - secrets/mysql_secrets.env
+        - secrets/web_secrets.env
+        - settings/web_settings.env
+
+    - name: Copy configurations files
+      copy:
+        src: "{{ project_root }}/{{ item }}"
+        dest: "{{ project_root }}/redmine/{{ item }}"
+        force: no
+      with_items:
+        - config/additional_environment.rb
+        - config/database.yml
+
+    - name: Copy initializers
+      copy: src="{{ project_root }}/config/secret_token.rb" dest="{{ project_root }}/redmine/config/initializers/" force=no
+
+    - name: Copy Gemfile.local
+      copy: src="{{ project_root }}/config/Gemfile.local" dest="{{ project_root }}/redmine/" force=no
+
+    - name: Copy puma
+      copy: src="{{ project_root }}/config/puma.rb" dest="{{ project_root }}/redmine/tmp/" force=no
+
+    - name: Build Redmine production container
+      shell: "docker-compose -f docker/build/build.yml build"
+      args:
+        chdir: "{{ project_root }}"
+        shell: /bin/bash

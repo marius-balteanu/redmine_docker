@@ -10,4 +10,4 @@ group :development do
 end
 
 # The awesome web server
-gem 'puma', '3.6.2'
+# gem 'puma', '3.6.2'

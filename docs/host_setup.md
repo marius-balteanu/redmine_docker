@@ -66,6 +66,12 @@ git clone https://github.com/redmine/redmine.git
 git clone git@github.com:redmine/redmine.git
 ```
 
+Make sure to checkout the correct version of redmine before proceeding:
+```bash
+cd redmine
+git checkout 3.4.2
+cd -
+```
 
 ## Initial Setup
 
@@ -173,7 +179,6 @@ git clone git@github.com:redmine/redmine.git
     http://redmine.local/
     ```
 
-
 ## Cheatsheet
 
 ### Execute commands inside a contaier
@@ -188,7 +193,6 @@ docker-compose -p redmine exec web bundle install
 docker-compose -p redmine exec web /entry rails c
 ```
 
-
 ### View logs
 
 You can use the `docker-tail` alias:
@@ -200,7 +204,6 @@ You can also use the full command:
 ``` bash
 docker logs -f --tail=100 redmine_web_1
 ```
-
 
 ### Debugging
 
@@ -214,6 +217,6 @@ docker attach redmine_web_1
 To detach from the container press `Ctrl+p Ctrl+q`.
 
 >
-#### NOTE!
+**NOTE!**
 If you press `Ctrl+c` while attached you will terminate the process and stop
 the container. You will have to restart the container afterwards.

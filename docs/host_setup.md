@@ -165,8 +165,7 @@ cd -
 
 7. Initialize the database:
     ```bash
-    docker-compose -p redmine exec web \
-      /entry bundle exec rake db:create db:migrate
+    docker-compose -p redmine exec web /entry bundle exec rake db:create db:migrate
     ```
 
 8. Restart the web service:
@@ -188,6 +187,9 @@ Make sure the container is running and execute:
 ```bash
 # To install gems use the version without `/enrty`
 docker-compose -p redmine exec web bundle install
+
+# To migrate plugins use the version with `/enrty`
+docker-compose -p redmine exec web /entry bundle exec rake redmine:plugins:migrate
 
 # Any other command that depends on the enviroment must pass trough `/entry`
 docker-compose -p redmine exec web /entry rails c

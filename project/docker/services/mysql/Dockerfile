@@ -1,4 +1,4 @@
-FROM mysql:5.7.17
+FROM mysql:5.7.19
 
 ADD ./docker/services/mysql/entry /
 

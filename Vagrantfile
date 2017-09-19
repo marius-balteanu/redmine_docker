@@ -1,4 +1,4 @@
-# Automatically installs required plugin on Windows
+# Automatically installs required plugin on Windows.
 if Vagrant::Util::Platform.windows?
   plugin = 'vagrant-winnfsd'
 
@@ -28,9 +28,10 @@ Vagrant.configure(2) do |config|
   end
 
   # Sync the sources folder with the machine.
-  config.vm.synced_folder '.', '/vagrant', type: :nfs
+  synced_folder_type = Vagrant::Util::Platform.windows? ? 'nfs' : nil
+  config.vm.synced_folder '.', '/vagrant', type: synced_folder_type
 
-  # Set to true if you want automatic checks
+  # Set to true if you want automatic checks.
   config.vm.box_check_update = false
 
   # Le awesome provisioning here

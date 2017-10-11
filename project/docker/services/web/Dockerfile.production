@@ -19,8 +19,8 @@ RUN set -ex                                                 && \
     chown -R notroot:notroot /work /import /secrets         && \
                                                                \
     echo 'Installing required packages'                     && \
-    apt-get update                                          && \
-    apt-get install -y --no-install-recommends                 \
+    apt update                                              && \
+    apt install -y --no-install-recommends                     \
       git                                                      \
       libmagickwand-dev                                        \
       libpq-dev                                                \

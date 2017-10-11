@@ -193,6 +193,9 @@ docker-compose -p redmine exec web /entry bundle exec rake redmine:plugins:migra
 
 # Any other command that depends on the enviroment must pass trough `/entry`
 docker-compose -p redmine exec web /entry rails c
+
+# Or you can start a shell:
+docker-compose -p redmine exec web /entry bash -l
 ```
 
 ### View logs

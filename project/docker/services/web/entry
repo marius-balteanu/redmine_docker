@@ -20,11 +20,13 @@ fi
 if [ -f /work/tmp/.run_bundle_update ];
 then
   bundle update --jobs 3 --retry 3
+  rm /work/tmp/.run_bundle_update
 fi
 
 if [ -f /work/tmp/.run_bundle_install ];
 then
   bundle install --jobs 3 --retry 3
+  rm /work/tmp/.run_bundle_install
 fi
 
 # Starts spring server if running in development.

@@ -1,4 +1,4 @@
-# Automatically installs required plugin on Windows
+# Automatically installs required plugin on Windows.
 if Vagrant::Util::Platform.windows?
   plugin = 'vagrant-winnfsd'
 
@@ -7,8 +7,8 @@ end
 
 # Configures virtual machine
 Vagrant.configure(2) do |config|
-  config.vm.box         = 'debian/jessie64'
-  config.vm.box_version = '8.7.0'
+  config.vm.box         = 'debian/stretch64'
+  config.vm.box_version = '9.1.0'
 
   config.vm.network 'private_network', ip: '192.168.33.31'
 
@@ -28,25 +28,15 @@ Vagrant.configure(2) do |config|
   end
 
   # Sync the sources folder with the machine.
-  # For Windows `nfs` is preffered due to poor performance of default settings.
   synced_folder_type = Vagrant::Util::Platform.windows? ? 'nfs' : nil
   config.vm.synced_folder '.', '/vagrant', type: synced_folder_type
 
-  # Set to true if you want automatic checks
+  # Set to true if you want automatic checks.
   config.vm.box_check_update = false
 
   # Le awesome provisioning here
   config.vm.provision 'shell', run: 'always', inline: <<-SHELL
     set -x
-
-    # Install git if not present
-    command -v git >/dev/null 2>&1
-    if [ $? -eq 1 ]
-    then
-      echo 'Installing GIT'
-      apt-get update
-      apt-get install -y --no-install-recommends git
-    fi
 
     # Install curl if not present
     command -v curl >/dev/null 2>&1
@@ -99,7 +89,7 @@ Vagrant.configure(2) do |config|
     else
       echo 'Installing Docker Compose, please be patient!'
 
-      curl -L https://github.com/docker/compose/releases/download/1.10.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+      curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
       chmod +x /usr/local/bin/docker-compose
       curl -L https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose
 
@@ -108,4 +98,9 @@ Vagrant.configure(2) do |config|
 
     echo 'Everything is ready!'
   SHELL
+
+  # Provision the machine (install software prerequisites)
+	config.vm.provision "ansible_local" do |ansible|
+		ansible.playbook = "ansible/provision.yml"
+  end
 end

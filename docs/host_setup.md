@@ -80,32 +80,7 @@ cd -
     cd project
     ```
 
-2. You need to create the configuration files as following:
-    * `environment/web.env`
-    * `secrets/mysql_secrets.env`
-    * `secrets/web_secrets.env`
-    * `settings/web_settings.env`
-
-    All of them have a corresponding `.sample` file in the same directory in which
-    you can find more information about what each must contain. If you want the
-    default values then simply copy them with the following commands:
-    ```bash
-    \cp -f ./environment/web.env.sample       ./environment/web.env
-    \cp -f ./secrets/mysql_secrets.env.sample ./secrets/mysql_secrets.env
-    \cp -f ./secrets/web_secrets.env.sample   ./secrets/web_secrets.env
-    \cp -f ./settings/web_settings.env.sample ./settings/web_settings.env
-    ```
-
-2. Copy the files in `project/config` to their right location:
-    ```bash
-    \cp -f ./config/Gemfile.local             ./redmine/
-    \cp -f ./config/additional_environment.rb ./redmine/config/
-    \cp -f ./config/database.yml              ./redmine/config/
-    \cp -f ./config/puma.rb                   ./redmine/tmp/
-    \cp -f ./config/secret_token.rb           ./redmine/config/initializers
-    ```
-
-3. Build the containers:
+2. Build the containers:
     ```bash
     # First you build the production containers:
     docker-compose -f docker/build/build.yml build
@@ -115,12 +90,12 @@ cd -
     docker-compose -f docker/build/build-dev.yml build
     ```
 
-4. Make sure the reverse proxy is started:
+3. Make sure the reverse proxy is started:
     ```bash
     docker start nginx_reverse_proxy
     ```
 
-5. Start the containers:
+4. Start the containers:
 
     For Development execute just this command below:
     ```bash
@@ -158,22 +133,22 @@ cd -
     * `DEPLOYMENT_ENV=development`
     * `DEPLOYMENT_ENV=production`
 
-6. Connect the frontend network to the nginx reverse proxy:
+5. Connect the frontend network to the nginx reverse proxy:
     ```bash
     docker network connect redmine_frontend_network nginx_reverse_proxy
     ```
 
-7. Initialize the database:
+6. Initialize the database:
     ```bash
     docker-compose -p redmine exec web /entry bundle exec rake db:create db:migrate
     ```
 
-8. Restart the web service:
+7. Restart the web service:
     ```bash
     docker-compose -p redmine restart web
     ```
 
-9. Visit the application url in a browser:
+8. Visit the application url in a browser:
     ```bash
     http://redmine.local/
     ```
